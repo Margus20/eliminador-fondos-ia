@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eliminador de Fondos Gratuito</title>
+    <title>Eliminador de Fondos IA</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #333;
             margin: 0;
             padding: 20px;
@@ -18,110 +18,209 @@
         }
         .container {
             background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             padding: 30px;
             max-width: 600px;
             width: 100%;
             text-align: center;
         }
-        h1 { color: #2c3e50; margin-bottom: 10px; }
-        p { color: #7f8c8d; margin-bottom: 25px; }
+        h1 { 
+            color: #667eea; 
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 0.95em;
+        }
         .upload-area {
-            border: 2px dashed #3498db;
-            border-radius: 8px;
-            padding: 40px 20px;
-            background-color: #ebf5fb;
+            border: 3px dashed #667eea;
+            border-radius: 10px;
+            padding: 50px 20px;
+            background-color: #f8f9ff;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
             margin-bottom: 20px;
         }
-        .upload-area:hover { background-color: #d6eaf8; }
+        .upload-area:hover { 
+            background-color: #eef1ff;
+            transform: scale(1.02);
+        }
         input[type="file"] { display: none; }
         .btn {
-            background-color: #3498db;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
+            padding: 15px 30px;
+            border-radius: 8px;
             font-size: 16px;
             cursor: pointer;
             text-decoration: none;
             display: inline-block;
+            margin-top: 15px;
+            font-weight: bold;
         }
-        .btn:hover { background-color: #2980b9; }
-        .result-area { margin-top: 30px; display: none; }
+        .btn:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .result-area { 
+            margin-top: 30px; 
+            display: none;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 10px;
+        }
         .result-area img {
             max-width: 100%;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            background-image: 
+                linear-gradient(45deg, #ccc 25%, transparent 25%), 
+                linear-gradient(-45deg, #ccc 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #ccc 75%), 
+                linear-gradient(-45deg, transparent 75%, #ccc 75%);
             background-size: 20px 20px;
             background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
         }
-        .loading { display: none; margin-top: 20px; color: #3498db; font-weight: bold; }
+        .loading { 
+            display: none; 
+            margin: 20px 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .error {
+            background-color: #fee;
+            color: #c33;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #c33;
+        }
+        .success {
+            background-color: #efe;
+            color: #3c3;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #3c3;
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>Eliminador de Fondos</h1>
-        <p>Sube tu imagen y la IA quitará el fondo automáticamente.</p>
+        <h1>🎨 Eliminador de Fondos</h1>
+        <p class="subtitle">Sube una imagen y la IA quitará el fondo automáticamente. 100% gratis y sin registro.</p>
 
         <label class="upload-area" for="imageInput">
-            <span>📁 Haz clic aquí para seleccionar una imagen</span>
-            <input type="file" id="imageInput" accept="image/png, image/jpeg, image/jpg">
+            <div style="font-size: 3em; margin-bottom: 10px;">📁</div>
+            <span style="font-size: 1.1em; font-weight: 500;">Haz clic para seleccionar una imagen</span>
+            <div style="font-size: 0.85em; color: #999; margin-top: 10px;">Soporta: JPG, PNG, WebP</div>
+            <input type="file" id="imageInput" accept="image/*">
         </label>
 
         <div class="loading" id="loadingMessage">
-            ⏳ Procesando... (La primera vez tarda un poco más descargando la IA)
+            <div class="spinner"></div>
+            <div>🔄 Procesando imagen con IA...</div>
+            <div style="font-size: 0.85em; color: #999; margin-top: 10px;">Esto puede tomar 10-30 segundos</div>
         </div>
 
+        <div id="messageArea"></div>
+
         <div class="result-area" id="resultArea">
-            <h3>✅ ¡Listo!</h3>
-            <img id="resultImage" alt="Imagen sin fondo">
+            <h2 style="color: #667eea; margin-top: 0;">✅ ¡Imagen lista!</h2>
+            <img id="resultImage" alt="Sin fondo">
+            <br>
+            <a id="downloadLink" class="btn" download="sin-fondo.png">⬇️ Descargar Imagen</a>
             <br><br>
-            <a id="downloadLink" class="btn" download="imagen-sin-fondo.png">⬇️ Descargar Imagen</a>
+            <button class="btn" onclick="location.reload()" style="background: #999;">🔄 Procesar otra</button>
         </div>
     </div>
 
-    <!-- Librería IA -->
-    <script src="https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.0.4/dist/imgly-background-removal.min.js"></script>
-    
     <script>
         const imageInput = document.getElementById('imageInput');
         const loadingMessage = document.getElementById('loadingMessage');
         const resultArea = document.getElementById('resultArea');
         const resultImage = document.getElementById('resultImage');
         const downloadLink = document.getElementById('downloadLink');
+        const messageArea = document.getElementById('messageArea');
 
         imageInput.addEventListener('change', async function(event) {
             const file = event.target.files[0];
             if (!file) return;
 
+            // Validar que sea imagen
+            if (!file.type.startsWith('image/')) {
+                showMessage('❌ Por favor selecciona un archivo de imagen válido', 'error');
+                return;
+            }
+
+            // Validar tamaño (máximo 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                showMessage('❌ La imagen es muy grande. Máximo 5MB permitido.', 'error');
+                return;
+            }
+
+            // Mostrar loading
             loadingMessage.style.display = 'block';
             resultArea.style.display = 'none';
-            loadingMessage.textContent = "⏳ Procesando... (La primera vez tarda un poco más)";
-            loadingMessage.style.color = "#3498db";
+            messageArea.innerHTML = '';
 
             try {
-                // AQUÍ ESTÁ LA CORRECCIÓN: Le decimos exactamente de dónde sacar los modelos
-                const blob = await imglyRemoveBackground(file, {
-                    publicPath: 'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.0.4/dist/'
+                // Crear FormData para enviar la imagen
+                const formData = new FormData();
+                formData.append('image', file);
+                formData.append('size', 'full');
+
+                // Usar API de remove.bg alternativa (pollinations.ai)
+                const response = await fetch('https://image.pollinations.ai/remove-background', {
+                    method: 'POST',
+                    body: formData
                 });
-                
+
+                if (!response.ok) {
+                    throw new Error('Error en el servidor: ' + response.status);
+                }
+
+                // Obtener la imagen procesada
+                const blob = await response.blob();
                 const url = URL.createObjectURL(blob);
+                
                 resultImage.src = url;
                 downloadLink.href = url;
                 
                 loadingMessage.style.display = 'none';
                 resultArea.style.display = 'block';
+                
+                showMessage('✅ Imagen procesada exitosamente', 'success');
+                
             } catch (error) {
-                console.error(error);
-                loadingMessage.textContent = '❌ Error: ' + error.message;
-                loadingMessage.style.color = '#e74c3c';
+                console.error('Error:', error);
+                loadingMessage.style.display = 'none';
+                showMessage('❌ Error: ' + error.message + '<br><br>💡 Intenta con otra imagen o verifica tu conexión a internet.', 'error');
             }
         });
+
+        function showMessage(text, type) {
+            messageArea.innerHTML = `<div class="${type}">${text}</div>`;
+        }
     </script>
 </body>
 </html>
