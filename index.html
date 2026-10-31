@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eliminador de Fondos Gratuito</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #7f8c8d;
+            margin-bottom: 25px;
+        }
+        .upload-area {
+            border: 2px dashed #3498db;
+            border-radius: 8px;
+            padding: 40px 20px;
+            background-color: #ebf5fb;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 20px;
+        }
+        .upload-area:hover {
+            background-color: #d6eaf8;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+        .result-area {
+            margin-top: 30px;
+            display: none;
+        }
+        .result-area img {
+            max-width: 100%;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+        .loading {
+            display: none;
+            margin-top: 20px;
+            color: #3498db;
+            font-weight: bold;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #95a5a6;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Eliminador de Fondos</h1>
+        <p>Sube tu imagen y la inteligencia artificial quitará el fondo automáticamente. Todo sucede en tu navegador, de forma privada y gratuita.</p>
+
+        <label class="upload-area" for="imageInput">
+            <span>📁 Haz clic aquí para seleccionar una imagen</span>
+            <input type="file" id="imageInput" accept="image/png, image/jpeg, image/jpg">
+        </label>
+
+        <div class="loading" id="loadingMessage">
+            ⏳ Procesando imagen... Esto puede tomar unos segundos dependiendo de tu dispositivo.
+        </div>
+
+        <div class="result-area" id="resultArea">
+            <h3>✅ ¡Listo!</h3>
+            <img id="resultImage" alt="Imagen sin fondo">
+            <br>
+            <a id="downloadLink" class="btn" download="imagen-sin-fondo.png">⬇️ Descargar Imagen</a>
+        </div>
+
+        <div class="footer">
+            <p>Herramienta creada con tecnología de código abierto.</p>
+        </div>
+    </div>
+
+    <!-- Cargamos la librería de inteligencia artificial directamente desde un CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.0.4/dist/imgly-background-removal.min.js"></script>
+    
+    <script>
+        const imageInput = document.getElementById('imageInput');
+        const loadingMessage = document.getElementById('loadingMessage');
+        const resultArea = document.getElementById('resultArea');
+        const resultImage = document.getElementById('resultImage');
+        const downloadLink = document.getElementById('downloadLink');
+
+        imageInput.addEventListener('change', async function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Mostramos el mensaje de carga y ocultamos resultados anteriores
+            loadingMessage.style.display = 'block';
+            resultArea.style.display = 'none';
+
+            try {
+                // La librería imgly se encarga de todo el proceso de IA en el navegador
+                const blob = await imglyRemoveBackground(file);
+                
+                // Creamos una URL temporal para mostrar la imagen resultante
+                const url = URL.createObjectURL(blob);
+                resultImage.src = url;
+                downloadLink.href = url;
+                
+                // Mostramos el resultado
+                loadingMessage.style.display = 'none';
+                resultArea.style.display = 'block';
+            } catch (error) {
+                console.error('Error al procesar la imagen:', error);
+                loadingMessage.textContent = '❌ Hubo un error al procesar la imagen. Intenta con otra.';
+                loadingMessage.style.color = '#e74c3c';
+            }
+        });
+    </script>
+</body>
+</html>
