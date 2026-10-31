@@ -25,14 +25,8 @@
             width: 100%;
             text-align: center;
         }
-        h1 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-        p {
-            color: #7f8c8d;
-            margin-bottom: 25px;
-        }
+        h1 { color: #2c3e50; margin-bottom: 10px; }
+        p { color: #7f8c8d; margin-bottom: 25px; }
         .upload-area {
             border: 2px dashed #3498db;
             border-radius: 8px;
@@ -42,12 +36,8 @@
             transition: background-color 0.3s ease;
             margin-bottom: 20px;
         }
-        .upload-area:hover {
-            background-color: #d6eaf8;
-        }
-        input[type="file"] {
-            display: none;
-        }
+        .upload-area:hover { background-color: #d6eaf8; }
+        input[type="file"] { display: none; }
         .btn {
             background-color: #3498db;
             color: white;
@@ -56,20 +46,11 @@
             border-radius: 6px;
             font-size: 16px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin-top: 10px;
+            text-decoration: none;
+            display: inline-block;
         }
-        .btn:hover {
-            background-color: #2980b9;
-        }
-        .btn:disabled {
-            background-color: #bdc3c7;
-            cursor: not-allowed;
-        }
-        .result-area {
-            margin-top: 30px;
-            display: none;
-        }
+        .btn:hover { background-color: #2980b9; }
+        .result-area { margin-top: 30px; display: none; }
         .result-area img {
             max-width: 100%;
             border-radius: 8px;
@@ -78,24 +59,14 @@
             background-size: 20px 20px;
             background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
         }
-        .loading {
-            display: none;
-            margin-top: 20px;
-            color: #3498db;
-            font-weight: bold;
-        }
-        .footer {
-            margin-top: 30px;
-            font-size: 14px;
-            color: #95a5a6;
-        }
+        .loading { display: none; margin-top: 20px; color: #3498db; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <h1>Eliminador de Fondos</h1>
-        <p>Sube tu imagen y la inteligencia artificial quitará el fondo automáticamente. Todo sucede en tu navegador, de forma privada y gratuita.</p>
+        <p>Sube tu imagen y la IA quitará el fondo automáticamente.</p>
 
         <label class="upload-area" for="imageInput">
             <span>📁 Haz clic aquí para seleccionar una imagen</span>
@@ -103,22 +74,18 @@
         </label>
 
         <div class="loading" id="loadingMessage">
-            ⏳ Procesando imagen... Esto puede tomar unos segundos dependiendo de tu dispositivo.
+            ⏳ Procesando... (La primera vez tarda un poco más descargando la IA)
         </div>
 
         <div class="result-area" id="resultArea">
             <h3>✅ ¡Listo!</h3>
             <img id="resultImage" alt="Imagen sin fondo">
-            <br>
+            <br><br>
             <a id="downloadLink" class="btn" download="imagen-sin-fondo.png">⬇️ Descargar Imagen</a>
-        </div>
-
-        <div class="footer">
-            <p>Herramienta creada con tecnología de código abierto.</p>
         </div>
     </div>
 
-    <!-- Cargamos la librería de inteligencia artificial directamente desde un CDN -->
+    <!-- Librería IA -->
     <script src="https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.0.4/dist/imgly-background-removal.min.js"></script>
     
     <script>
@@ -132,25 +99,26 @@
             const file = event.target.files[0];
             if (!file) return;
 
-            // Mostramos el mensaje de carga y ocultamos resultados anteriores
             loadingMessage.style.display = 'block';
             resultArea.style.display = 'none';
+            loadingMessage.textContent = "⏳ Procesando... (La primera vez tarda un poco más)";
+            loadingMessage.style.color = "#3498db";
 
             try {
-                // La librería imgly se encarga de todo el proceso de IA en el navegador
-                const blob = await imglyRemoveBackground(file);
+                // AQUÍ ESTÁ LA CORRECCIÓN: Le decimos exactamente de dónde sacar los modelos
+                const blob = await imglyRemoveBackground(file, {
+                    publicPath: 'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.0.4/dist/'
+                });
                 
-                // Creamos una URL temporal para mostrar la imagen resultante
                 const url = URL.createObjectURL(blob);
                 resultImage.src = url;
                 downloadLink.href = url;
                 
-                // Mostramos el resultado
                 loadingMessage.style.display = 'none';
                 resultArea.style.display = 'block';
             } catch (error) {
-                console.error('Error al procesar la imagen:', error);
-                loadingMessage.textContent = '❌ Hubo un error al procesar la imagen. Intenta con otra.';
+                console.error(error);
+                loadingMessage.textContent = '❌ Error: ' + error.message;
                 loadingMessage.style.color = '#e74c3c';
             }
         });
